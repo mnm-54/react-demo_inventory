@@ -36,6 +36,15 @@ class App extends Component {
     const index = products.indexOf(product);
     products[index].amount++;
     this.setState({ products: products });
+    this.updateProduct(products[index].id, products[index].amount);
+  };
+  updateProduct = async (id, amount) => {
+    try {
+      let data = await api.put(`/products/${id}`, { amount: amount });
+      console.log("req sent");
+    } catch (err) {
+      console.log("error: ", err);
+    }
   };
   handleReset = () => {
     const products = this.state.products.map((product) => {
