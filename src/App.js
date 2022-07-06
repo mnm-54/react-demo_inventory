@@ -39,6 +39,13 @@ class App extends Component {
     this.setState({ products: products });
     this.updateProduct(products[index].id, products[index].amount);
   };
+  handleDecrement = (product) => {
+    const products = [...this.state.products];
+    const index = products.indexOf(product);
+    products[index].amount--;
+    this.setState({ products: products });
+    this.updateProduct(products[index].id, products[index].amount);
+  };
   updateProduct = async (id, amount) => {
     try {
       let data = await api.put(`/products/${id}`, { amount: amount });
@@ -81,6 +88,7 @@ class App extends Component {
           products={this.state.products}
           onDelete={this.handleDelete}
           onIncrement={this.handleIncrement}
+          onDecrement={this.handleDecrement}
           onReset={this.handleReset}
         />
       </React.Fragment>

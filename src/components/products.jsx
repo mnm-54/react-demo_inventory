@@ -3,17 +3,11 @@ import Product from "./product";
 
 function Products(props) {
   let styles = {
-    width: "80%",
+    width: "90%",
   };
 
   return (
     <div>
-      <button
-        className="btn btn-danger btn-sm m-2"
-        onClick={() => props.onReset()}
-      >
-        Reset
-      </button>
       <table className="table table-striped m-2" style={styles}>
         <thead>
           <tr>
@@ -30,10 +24,18 @@ function Products(props) {
               onDelete={props.onDelete}
               product={product}
               onIncrement={props.onIncrement}
+              onDecrement={props.onDecrement}
             />
           ))}
         </tbody>
       </table>
+      <button
+        className="btn btn-danger btn-sm m-2"
+        title="Reset amount to zero for all product"
+        onClick={() => props.onReset()}
+      >
+        Reset
+      </button>
     </div>
   );
 }

@@ -14,12 +14,23 @@ function Product(props) {
             onClick={() => {
               props.onIncrement(props.product);
             }}
+            title={"Increment by 1"}
           >
             Increment
           </button>
           <button
+            className="btn btn-secondary btn-sm m-2"
+            onClick={() => {
+              props.onDecrement(props.product);
+            }}
+            title={"Decrement by 1"}
+          >
+            Decrement
+          </button>
+          <button
             className="btn btn-danger btn-sm m-2"
             onClick={() => props.onDelete(props.product.id)}
+            title={"Delete product"}
           >
             Delete
           </button>

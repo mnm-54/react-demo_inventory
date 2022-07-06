@@ -24,6 +24,7 @@ function ProductInput(props) {
 
   return (
     <form onSubmit={handleSubmit} className="p-2 bg-light border input-group">
+      <legend>Enter new product:</legend>
       <input
         type="text"
         className="product-input form-control"
