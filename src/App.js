@@ -13,16 +13,18 @@ function App() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
     api.get("/").then((res) => {
-      console.log(res.body);
-      setProducts(res.body);
+      if (mounted) {
+        setProducts(res.data);
+      }
     });
-    console.log(products);
-  });
+    return () => (mounted = false);
+  }, []);
 
   let handleDelete = (productId) => {
-    const products = products.filter((product) => product.id !== productId);
-    setProducts(products);
+    const newproducts = products.filter((product) => product.id !== productId);
+    setProducts(newproducts);
     deleteProduct(productId);
   };
   let deleteProduct = async (id) => {
@@ -30,23 +32,22 @@ function App() {
   };
 
   let handleIncrement = (product) => {
-    const products = [...products];
-    const index = products.indexOf(product);
-    products[index].amount++;
-    setProducts(products);
-    updateProduct(products[index].id, products[index].amount);
+    const newProducts = [...products];
+    const index = newProducts.indexOf(product);
+    newProducts[index].amount++;
+    setProducts(newProducts);
+    updateProduct(newProducts[index].id, newProducts[index].amount);
   };
   let handleDecrement = (product) => {
-    const products = [...products];
-    const index = products.indexOf(product);
-    products[index].amount--;
-    setProducts(products);
-    updateProduct(products[index].id, products[index].amount);
+    const newProducts = [...products];
+    const index = newProducts.indexOf(product);
+    newProducts[index].amount--;
+    setProducts(newProducts);
+    updateProduct(newProducts[index].id, newProducts[index].amount);
   };
   let updateProduct = async (id, amount) => {
     try {
       let data = await api.put(`/products/${id}`, { amount: amount });
-      console.log("req sent");
     } catch (err) {
       console.log("error: ", err);
     }
@@ -54,7 +55,6 @@ function App() {
 
   let addProduct = async (product) => {
     try {
-      console.log(product);
       await api.post("/", product).then((res) => {
         setProducts(res.data);
       });
@@ -64,13 +64,13 @@ function App() {
   };
 
   let handleReset = () => {
-    const products = products.map((product) => {
+    const newProducts = products.map((product) => {
       product.amount = 0;
       return product;
     });
 
-    setProducts(products);
-    resetProducts(products);
+    setProducts(newProducts);
+    resetProducts(newProducts);
   };
   let resetProducts = async (products) => {
     try {
@@ -82,7 +82,7 @@ function App() {
 
   return (
     <React.Fragment>
-      {/* <NavBar
+      <NavBar
         amountProducts={products.map((p) => {
           return p.amount;
         })}
@@ -94,7 +94,7 @@ function App() {
         onIncrement={handleIncrement}
         onDecrement={handleDecrement}
         onReset={handleReset}
-      /> */}
+      />
     </React.Fragment>
   );
 }
