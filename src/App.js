@@ -1,81 +1,78 @@
 import "./App.css";
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "./components/navbar";
 import Products from "./components/products";
 import axios from "axios";
 import ProductInput from "./components/productInput";
 
 const api = axios.create({
-  baseURL: `http://127.0.0.1:3000/`,
+  baseURL: `http://127.0.0.1:3001/`,
 });
 
-class App extends Component {
-  state = {
-    products: [],
-  };
+function App() {
+  const [products, setProducts] = useState([]);
 
-  constructor() {
-    super();
+  useEffect(() => {
+    let mounted = true;
     api.get("/").then((res) => {
-      this.setState({ products: res.data });
+      if (mounted) {
+        setProducts(res.data);
+      }
     });
-  }
+    return () => (mounted = false);
+  }, []);
 
-  handleDelete = (productId) => {
-    const products = this.state.products.filter(
-      (product) => product.id !== productId
-    );
-    this.setState({ products: products });
-    this.deleteProduct(productId);
+  let handleDelete = (productId) => {
+    const newproducts = products.filter((product) => product.id !== productId);
+    setProducts(newproducts);
+    deleteProduct(productId);
   };
-  deleteProduct = async (id) => {
+  let deleteProduct = async (id) => {
     let data = await api.delete(`/products/${id}`);
   };
 
-  handleIncrement = (product) => {
-    const products = [...this.state.products];
-    const index = products.indexOf(product);
-    products[index].amount++;
-    this.setState({ products: products });
-    this.updateProduct(products[index].id, products[index].amount);
+  let handleIncrement = (product) => {
+    const newProducts = [...products];
+    const index = newProducts.indexOf(product);
+    newProducts[index].amount++;
+    setProducts(newProducts);
+    updateProduct(newProducts[index].id, newProducts[index].amount);
   };
-  handleDecrement = (product) => {
-    const products = [...this.state.products];
-    const index = products.indexOf(product);
-    products[index].amount--;
-    this.setState({ products: products });
-    this.updateProduct(products[index].id, products[index].amount);
+  let handleDecrement = (product) => {
+    const newProducts = [...products];
+    const index = newProducts.indexOf(product);
+    newProducts[index].amount--;
+    setProducts(newProducts);
+    updateProduct(newProducts[index].id, newProducts[index].amount);
   };
-  updateProduct = async (id, amount) => {
+  let updateProduct = async (id, amount) => {
     try {
       let data = await api.put(`/products/${id}`, { amount: amount });
-      console.log("req sent");
     } catch (err) {
       console.log("error: ", err);
     }
   };
 
-  addProduct = async (product) => {
+  let addProduct = async (product) => {
     try {
-      console.log(product);
       await api.post("/", product).then((res) => {
-        this.setState({ products: res.data });
+        setProducts(res.data);
       });
     } catch (err) {
       console.log(err);
     }
   };
 
-  handleReset = () => {
-    const products = this.state.products.map((product) => {
+  let handleReset = () => {
+    const newProducts = products.map((product) => {
       product.amount = 0;
       return product;
     });
 
-    this.setState(products);
-    this.resetProducts(products);
+    setProducts(newProducts);
+    resetProducts(newProducts);
   };
-  resetProducts = async (products) => {
+  let resetProducts = async (products) => {
     try {
       await api.post("/reset", products);
     } catch (err) {
@@ -83,25 +80,23 @@ class App extends Component {
     }
   };
 
-  render() {
-    return (
-      <React.Fragment>
-        <NavBar
-          amountProducts={this.state.products.map((p) => {
-            return p.amount;
-          })}
-        />
-        <ProductInput onAddProduct={this.addProduct} />
-        <Products
-          products={this.state.products}
-          onDelete={this.handleDelete}
-          onIncrement={this.handleIncrement}
-          onDecrement={this.handleDecrement}
-          onReset={this.handleReset}
-        />
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <NavBar
+        amountProducts={products.map((p) => {
+          return p.amount;
+        })}
+      />
+      <ProductInput onAddProduct={addProduct} />
+      <Products
+        products={products}
+        onDelete={handleDelete}
+        onIncrement={handleIncrement}
+        onDecrement={handleDecrement}
+        onReset={handleReset}
+      />
+    </React.Fragment>
+  );
 }
 
 export default App;

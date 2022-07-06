@@ -7,7 +7,6 @@ function ProductInput(props) {
   const [price, setPrice] = useState(0);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
     if (name == "" || amount == 0 || price == 0) {
       alert("Some input fields are blank");
       return;
