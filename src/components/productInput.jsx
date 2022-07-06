@@ -47,7 +47,7 @@ function ProductInput(props) {
         title="price"
       />
 
-      <div className="select" title="brand name of product">
+      <div className="select form-control" title="brand name of product">
         <select
           name="todos"
           className="filter-brand form-control form-select"
@@ -60,7 +60,11 @@ function ProductInput(props) {
         </select>
       </div>
 
-      <input type="submit" value="Submit" className="btn btn-primary btn-sm" />
+      <input
+        type="submit"
+        value="Submit"
+        className="btn btn-primary btn-sm form-control ms-2"
+      />
     </form>
   );
 }

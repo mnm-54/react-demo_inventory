@@ -73,6 +73,14 @@ class App extends Component {
     });
 
     this.setState(products);
+    this.resetProducts(products);
+  };
+  resetProducts = async (products) => {
+    try {
+      await api.post("/reset", products);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   render() {
