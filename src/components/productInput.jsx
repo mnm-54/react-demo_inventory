@@ -8,6 +8,10 @@ function ProductInput(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (name == "" || amount == 0 || price == 0) {
+      alert("Some input fields are blank");
+      return;
+    }
     const product = {
       name: name,
       brand: brand,
@@ -19,24 +23,24 @@ function ProductInput(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="m-2">
+    <form onSubmit={handleSubmit} className="p-2 bg-light border input-group">
       <input
         type="text"
-        className="product-input"
+        className="product-input form-control"
         placeholder="product"
         title="Name of Product"
         onChange={(e) => setName(e.target.value)}
       />
       <input
         type="text"
-        className="amount-input"
+        className="amount-input form-control"
         placeholder="amount"
         onChange={(e) => setAmount(e.target.value)}
         title="Amount"
       />
       <input
         type="text"
-        className="amount-price"
+        className="amount-price form-control"
         onChange={(e) => setPrice(e.target.value)}
         placeholder="price"
         title="price"
@@ -45,7 +49,7 @@ function ProductInput(props) {
       <div className="select" title="brand name of product">
         <select
           name="todos"
-          className="filter-brand"
+          className="filter-brand form-control form-select"
           onChange={(e) => setBrand(e.target.value)}
         >
           <option value="unbranded">Unbranded</option>
