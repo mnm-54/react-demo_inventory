@@ -3,14 +3,14 @@ import React, { useState } from "react";
 function Product(props) {
   return (
     <React.Fragment>
-      <tr>
-        <td>{props.product.name} </td>
-        <td>{props.product.brand} </td>
-        <td>{props.product.amount}</td>
-        <td>{props.product.price} </td>
-        <td>
+      <tr className="hover:bg-slate-200">
+        <td className="tbl-data">{props.product.name} </td>
+        <td className="tbl-data">{props.product.brand} </td>
+        <td className="tbl-data">{props.product.amount}</td>
+        <td className="tbl-data">{props.product.price} </td>
+        <td className="tbl-data">
           <button
-            className="btn btn-dark btn-sm m-2"
+            className="btn increment-btn"
             onClick={() => {
               props.onIncrement(props.product);
             }}
@@ -19,7 +19,7 @@ function Product(props) {
             Increment
           </button>
           <button
-            className="btn btn-secondary btn-sm m-2"
+            className="btn decrement-btn"
             onClick={() => {
               props.onDecrement(props.product);
             }}
@@ -28,7 +28,7 @@ function Product(props) {
             Decrement
           </button>
           <button
-            className="btn btn-danger btn-sm m-2"
+            className="btn btn-reset"
             onClick={() => props.onDelete(props.product.id)}
             title={"Delete product"}
           >

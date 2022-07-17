@@ -8,13 +8,17 @@ function Products(props) {
 
   return (
     <div>
-      <table className="table table-striped m-2" style={styles}>
+      <table
+        className="m-2 border-collapse border border-slate-600"
+        style={styles}
+      >
         <thead>
           <tr>
-            <th>Product name</th>
-            <th>Brand</th>
-            <th>Amount</th>
-            <th>Price</th>
+            <th className="tbl-header">Product name</th>
+            <th className="tbl-header">Brand</th>
+            <th className="tbl-header">Amount</th>
+            <th className="tbl-header">Price</th>
+            <th className="tbl-header"></th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +34,7 @@ function Products(props) {
         </tbody>
       </table>
       <button
-        className="btn btn-danger btn-sm m-2"
+        className="btn btn-reset"
         title="Reset amount to zero for all product"
         onClick={() => props.onReset()}
       >

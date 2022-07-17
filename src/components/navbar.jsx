@@ -9,11 +9,11 @@ function NavBar(props) {
   };
 
   return (
-    <nav className="navbar bg-light">
+    <nav className="p-4 bg-slate-300">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
-          Inventory{" "}
-          <span className="badge bg-pill bg-secondary">{productCount()}</span>
+          <span className="text-blue-800 py-2 pl-2">Inventory </span>
+          <span className="badge">{productCount()}</span>
         </a>
       </div>
     </nav>
