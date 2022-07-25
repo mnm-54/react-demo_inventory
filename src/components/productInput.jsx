@@ -22,34 +22,34 @@ function ProductInput(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-2 bg-light border input-group">
-      <legend>Enter new product:</legend>
+    <form onSubmit={handleSubmit} className="p-2 bg-slate-100 my-5">
+      <legend className="pl-2">Enter new product:</legend>
       <input
         type="text"
-        className="product-input form-control"
+        className="form-input"
         placeholder="product"
         title="Name of Product"
         onChange={(e) => setName(e.target.value)}
       />
       <input
         type="text"
-        className="amount-input form-control"
+        className="form-input"
         placeholder="amount"
         onChange={(e) => setAmount(e.target.value)}
         title="Amount"
       />
       <input
         type="text"
-        className="amount-price form-control"
+        className="form-input"
         onChange={(e) => setPrice(e.target.value)}
         placeholder="price"
         title="price"
       />
 
-      <div className="select form-control" title="brand name of product">
+      <div className="form-input" title="brand name of product">
         <select
           name="todos"
-          className="filter-brand form-control form-select"
+          className=""
           onChange={(e) => setBrand(e.target.value)}
         >
           <option value="unbranded">Unbranded</option>
@@ -59,11 +59,7 @@ function ProductInput(props) {
         </select>
       </div>
 
-      <input
-        type="submit"
-        value="Submit"
-        className="btn btn-primary btn-sm form-control ms-2"
-      />
+      <input type="submit" value="Submit" className="btn increment-btn" />
     </form>
   );
 }
