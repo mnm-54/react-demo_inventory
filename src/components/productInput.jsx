@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { DB } from "../firebase-config";
+import { collection, addDoc } from "firebase/firestore";
 
 function ProductInput(props) {
   const [name, setName] = useState("");
@@ -6,7 +8,10 @@ function ProductInput(props) {
   const [amount, setAmount] = useState(0);
   const [price, setPrice] = useState(0);
 
-  const handleSubmit = (e) => {
+  const productsCollectionRef = collection(DB, "products");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (name == "" || amount == 0 || price == 0) {
       alert("Some input fields are blank");
       return;
@@ -17,8 +22,8 @@ function ProductInput(props) {
       amount: amount,
       price: price,
     };
-
-    props.onAddProduct(product);
+    await addDoc(productsCollectionRef, product);
+    // props.onAddProduct(product);
   };
 
   return (
