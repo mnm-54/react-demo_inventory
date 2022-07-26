@@ -33,13 +33,6 @@ function Products(props) {
           ))}
         </tbody>
       </table>
-      <button
-        className="btn btn-reset"
-        title="Reset amount to zero for all product"
-        onClick={() => props.onReset()}
-      >
-        Reset
-      </button>
     </div>
   );
 }

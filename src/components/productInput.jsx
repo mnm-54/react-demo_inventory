@@ -1,29 +1,41 @@
 import React, { useState } from "react";
-import { DB } from "../firebase-config";
+import { DB, storage } from "../firebase-config";
 import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
 
 function ProductInput(props) {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("Unbranded");
   const [amount, setAmount] = useState(0);
   const [price, setPrice] = useState(0);
+  const [imageUpload, setImageUpload] = useState(null);
 
   const productsCollectionRef = collection(DB, "products");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (name == "" || amount == 0 || price == 0) {
+    if (name == "" || amount == 0 || price == 0 || imageUpload == null) {
       alert("Some input fields are blank");
       return;
     }
-    const product = {
-      name: name,
-      brand: brand,
-      amount: amount,
-      price: price,
-    };
-    await addDoc(productsCollectionRef, product);
-    // props.onAddProduct(product);
+    // uploading image
+    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then(async (url) => {
+        const product = {
+          name: name,
+          brand: brand,
+          amount: amount,
+          price: price,
+          imgUrl: url,
+          id: "",
+        };
+        const newProduct = await addDoc(productsCollectionRef, product);
+        product.id = newProduct.id;
+        props.onCreate(product);
+      });
+    });
   };
 
   return (
@@ -49,6 +61,13 @@ function ProductInput(props) {
         onChange={(e) => setPrice(e.target.value)}
         placeholder="price"
         title="price"
+      />
+      <input
+        type="file"
+        className="form-input"
+        onChange={(e) => {
+          setImageUpload(e.target.files[0]);
+        }}
       />
 
       <div className="form-input" title="brand name of product">
