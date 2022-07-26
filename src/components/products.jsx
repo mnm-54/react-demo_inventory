@@ -18,7 +18,7 @@ function Products(props) {
             <th className="tbl-header">Brand</th>
             <th className="tbl-header">Amount</th>
             <th className="tbl-header">Price</th>
-            <th className="tbl-header"></th>
+            <th className="tbl-header">Preview</th>
             <th className="tbl-header"></th>
           </tr>
         </thead>

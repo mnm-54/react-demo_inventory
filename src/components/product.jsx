@@ -18,7 +18,7 @@ function Product(props) {
         <td className="tbl-data">{props.product.price} </td>
         <td className="tbl-data">
           <img
-            className="object-cover h-48 w-96"
+            className="object-cover h-48 w-96 hover:cursor-pointer"
             alt="product image"
             onClick={downloadImg}
             src={props.product.imgUrl}
