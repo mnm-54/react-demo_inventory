@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 
 function Product(props) {
+  const downloadImg = () => {
+    var element = document.createElement("a");
+    var file = new Blob([props.product.imgUrl], { type: "image/*" });
+    element.href = URL.createObjectURL(file);
+    element.download = "image.jpg";
+    element.click();
+  };
+
   return (
     <React.Fragment>
       <tr className="hover:bg-slate-200">
@@ -8,6 +16,14 @@ function Product(props) {
         <td className="tbl-data">{props.product.brand} </td>
         <td className="tbl-data">{props.product.amount}</td>
         <td className="tbl-data">{props.product.price} </td>
+        <td className="tbl-data">
+          <img
+            className="object-cover h-48 w-96 hover:cursor-pointer"
+            alt="product image"
+            onClick={downloadImg}
+            src={props.product.imgUrl}
+          ></img>{" "}
+        </td>
         <td className="tbl-data">
           <button
             className="btn increment-btn"

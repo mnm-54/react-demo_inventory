@@ -2,23 +2,28 @@ import "./App.css";
 import React, { useState, useEffect } from "react";
 import NavBar from "./components/navbar";
 import Products from "./components/products";
-import axios from "axios";
 import ProductInput from "./components/productInput";
-
-const api = axios.create({
-  baseURL: `http://127.0.0.1:3001/`,
-});
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { DB } from "./firebase-config";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const productsCollectionRef = collection(DB, "products");
 
   useEffect(() => {
     let mounted = true;
-    api.get("/").then((res) => {
-      if (mounted) {
-        setProducts(res.data);
-      }
-    });
+    const getProducts = async () => {
+      const data = await getDocs(productsCollectionRef);
+      setProducts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(products);
+    };
+    getProducts();
     return () => (mounted = false);
   }, []);
 
@@ -28,7 +33,9 @@ function App() {
     deleteProduct(productId);
   };
   let deleteProduct = async (id) => {
-    let data = await api.delete(`/products/${id}`);
+    console.log(id);
+    const productDoc = doc(DB, "products", id);
+    await deleteDoc(productDoc);
   };
 
   let handleIncrement = (product) => {
@@ -47,37 +54,17 @@ function App() {
   };
   let updateProduct = async (id, amount) => {
     try {
-      let data = await api.put(`/products/${id}`, { amount: amount });
+      const productDoc = doc(DB, "products", id);
+      const newFields = { amount: amount };
+      await updateDoc(productDoc, newFields);
     } catch (err) {
       console.log("error: ", err);
     }
   };
 
-  let addProduct = async (product) => {
-    try {
-      await api.post("/", product).then((res) => {
-        setProducts(res.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  let handleReset = () => {
-    const newProducts = products.map((product) => {
-      product.amount = 0;
-      return product;
-    });
-
-    setProducts(newProducts);
-    resetProducts(newProducts);
-  };
-  let resetProducts = async (products) => {
-    try {
-      await api.post("/reset", products);
-    } catch (err) {
-      console.log(err);
-    }
+  let addProduct = (product) => {
+    console.log(product);
+    setProducts((products) => [...products, product]);
   };
 
   return (
@@ -87,13 +74,12 @@ function App() {
           return p.amount;
         })}
       />
-      <ProductInput onAddProduct={addProduct} />
+      <ProductInput onCreate={addProduct} />
       <Products
         products={products}
         onDelete={handleDelete}
         onIncrement={handleIncrement}
         onDecrement={handleDecrement}
-        onReset={handleReset}
       />
     </React.Fragment>
   );

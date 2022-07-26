@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function NavBar(props) {
   const productCount = () => {
     let sum = props.amountProducts.reduce(function (x, y) {
-      return x + y;
+      return parseInt(x) + parseInt(y);
     }, 0);
     return sum;
   };

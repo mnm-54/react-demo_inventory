@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Product from "./product";
 
 function Products(props) {
@@ -18,6 +18,7 @@ function Products(props) {
             <th className="tbl-header">Brand</th>
             <th className="tbl-header">Amount</th>
             <th className="tbl-header">Price</th>
+            <th className="tbl-header">Preview</th>
             <th className="tbl-header"></th>
           </tr>
         </thead>
@@ -33,13 +34,6 @@ function Products(props) {
           ))}
         </tbody>
       </table>
-      <button
-        className="btn btn-reset"
-        title="Reset amount to zero for all product"
-        onClick={() => props.onReset()}
-      >
-        Reset
-      </button>
     </div>
   );
 }
