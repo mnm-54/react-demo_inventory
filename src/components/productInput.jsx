@@ -3,39 +3,48 @@ import { DB, storage } from "../firebase-config";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import { async } from "@firebase/util";
 
 function ProductInput(props) {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("Unbranded");
   const [amount, setAmount] = useState(0);
   const [price, setPrice] = useState(0);
-  const [imageUpload, setImageUpload] = useState(null);
+  const [imageUpload, setImageUpload] = useState([]);
+  const [imgURls, setImgUrls] = useState([]);
 
   const productsCollectionRef = collection(DB, "products");
 
-  const handleSubmit = (e) => {
+  const handleUploadImage = async () => {
+    for (let i = 0; i < imageUpload.length; i++) {
+      const imageRef = ref(storage, `images/${imageUpload[i].name + v4()}`);
+      uploadBytes(imageRef, imageUpload[i]).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+          setImgUrls((imgURls) => [...imgURls, url]);
+        });
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (name === "" || amount === 0 || price === 0 || imageUpload === null) {
       alert("Some input fields are blank");
       return;
     }
     // uploading image
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then(async (url) => {
-        const product = {
-          name: name,
-          brand: brand,
-          amount: amount,
-          price: price,
-          imgUrl: url,
-          id: "",
-        };
-        const newProduct = await addDoc(productsCollectionRef, product);
-        product.id = newProduct.id;
-        props.onCreate(product);
-      });
-    });
+    await handleUploadImage();
+    const product = {
+      name: name,
+      brand: brand,
+      amount: amount,
+      price: price,
+      imgUrl: imgURls,
+      id: "",
+    };
+    const newProduct = await addDoc(productsCollectionRef, product);
+    product.id = newProduct.id;
+    props.onCreate(product);
   };
 
   return (
@@ -65,8 +74,9 @@ function ProductInput(props) {
       <input
         type="file"
         className="form-input"
+        multiple
         onChange={(e) => {
-          setImageUpload(e.target.files[0]);
+          setImageUpload(e.target.files);
         }}
       />
 

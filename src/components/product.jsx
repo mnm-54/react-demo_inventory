@@ -1,9 +1,9 @@
 import React from "react";
 
 function Product(props) {
-  const downloadImg = () => {
+  const downloadImg = (url) => {
     var element = document.createElement("a");
-    var file = new Blob([props.product.imgUrl], { type: "image/*" });
+    var file = new Blob([url], { type: "image/*" });
     element.href = URL.createObjectURL(file);
     element.download = "image.jpg";
     element.click();
@@ -17,12 +17,16 @@ function Product(props) {
         <td className="tbl-data">{props.product.amount}</td>
         <td className="tbl-data">{props.product.price} </td>
         <td className="tbl-data">
-          <img
-            className="object-cover h-48 w-96 hover:cursor-pointer"
-            alt="product image"
-            onClick={downloadImg}
-            src={props.product.imgUrl}
-          ></img>{" "}
+          {props.product.imgUrl.map((url) => {
+            return (
+              <img
+                className="object-cover h-48 w-96 hover:cursor-pointer"
+                alt="product image"
+                onClick={() => downloadImg(url)}
+                src={url}
+              ></img>
+            );
+          })}
         </td>
         <td className="tbl-data">
           <button
