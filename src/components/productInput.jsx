@@ -3,7 +3,6 @@ import { DB, storage } from "../firebase-config";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
-import { async } from "@firebase/util";
 
 function ProductInput(props) {
   const [name, setName] = useState("");
@@ -18,14 +17,21 @@ function ProductInput(props) {
   const productsCollectionRef = collection(DB, "products");
 
   const handleUploadImage = () => {
-    for (let i = 0; i < imageUpload.length; i++) {
-      const imageRef = ref(storage, `images/${imageUpload[i].name + v4()}`);
-      uploadBytes(imageRef, imageUpload[i]).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          setImgUrls((imgURls) => [...imgURls, url]);
+    return new Promise((resolve, reject) => {
+      let newlist = [];
+      for (let i = 0; i < imageUpload.length; i++) {
+        const imageRef = ref(storage, `images/${imageUpload[i].name + v4()}`);
+        uploadBytes(imageRef, imageUpload[i]).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((url) => {
+            newlist.push(url);
+            if (i === imageUpload.length - 1) {
+              console.log(newlist);
+              resolve(newlist);
+            }
+          });
         });
-      });
-    }
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -36,19 +42,28 @@ function ProductInput(props) {
       return;
     }
     // uploading image
-    await handleUploadImage();
+    let newlist = await handleUploadImage();
+    console.log(newlist);
+    setImgUrls(newlist);
     const product = {
       name: name,
       brand: brand,
       amount: amount,
       price: price,
-      imgUrl: imgURls,
+      imgUrl: newlist,
       id: "",
     };
+    console.log("done2");
+    console.log(imgURls);
     const newProduct = await addDoc(productsCollectionRef, product);
     product.id = newProduct.id;
     props.onCreate(product);
 
+    setImgUrls([]);
+    setAmount(0);
+    setName("");
+    setPrice(0);
+    setBrand("Unbranded");
     setUploadStatus(true);
   };
 
